@@ -13,6 +13,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -41,17 +43,17 @@ class UserDaoTest {
         userDao.deleteAll();
         assertEquals(0, userDao.getCount());
         userDao.add(user1);
-        User user=userDao.findById("1");
+        User user=userDao.getById("1");
         assertEquals("minji", user1.getName());
         assertEquals(1, userDao.getCount());
 
         userDao.add(user2);
-        user=userDao.findById("2");
+        user=userDao.getById("2");
         assertEquals("nana", user2.getName());
         assertEquals(2, userDao.getCount());
 
         userDao.add(user3);
-        user=userDao.findById("3");
+        user=userDao.getById("3");
         assertEquals("mimi", user3.getName());
         assertEquals(3, userDao.getCount());
     }
@@ -61,5 +63,25 @@ class UserDaoTest {
         userDao.deleteAll();
         assertEquals(0, userDao.getCount());
     }
+    @Test
+    @DisplayName("getAll 테스트")
+    public void getAllTest() throws SQLException {
+        userDao.deleteAll();
+        List<User> users=new ArrayList<>();
+        assertEquals(0, userDao.getCount());
+        userDao.add(user1);
+        userDao.add(user2);
+        userDao.add(user3);
+        assertEquals(3, userDao.getCount());
+        users=userDao.getAll();
+        assertEquals(3, users.size());
+    }
+    @Test
+    void getById(){
+        assertThrows(EmptyResultDataAccessException.class, ()->{
+            userDao.getById("20");
+        });
+    }
+
 
 }

@@ -21,7 +21,7 @@ public class UserDao {
     private JdbcContext jdbcContext;
 
     private JdbcTemplate jdbcTemplate;
-    public UserDao(DataSource dataSource){this.dataSource=dataSource;}
+    public UserDao(DataSource dataSource){this.jdbcTemplate=new JdbcTemplate(dataSource);}
 
     public RowMapper<User> rowMapper=new RowMapper<User>() {
         @Override
@@ -60,13 +60,13 @@ public class UserDao {
                 return ps;
             }
         });*/
-        this.jdbcTemplate.update("Insert into users(id, name, password) values (?, ?. ?)",
+        this.jdbcTemplate.update("Insert into users(id, name, password) values (?, ?, ?)",
                 user.getId(), user.getName(), user.getPassword());
 
     }
 
     public User getById(String id) {
-        return this.jdbcTemplate.queryForObject("select * from users id=?", rowMapper, id);
+        return this.jdbcTemplate.queryForObject("select * from users where id=?", rowMapper, id);
     }
 
     public List<User> getAll(){
