@@ -9,6 +9,39 @@ public class UserDao {
     ConnectonMaker connectonMaker;
     public UserDao(){this.connectonMaker=new AwsConnectionMaker();}
     public UserDao(ConnectonMaker connectonMaker){this.connectonMaker=connectonMaker;}
+
+    public void deleteAll(){
+        try{
+            Connection c = connectonMaker.makeConnection();
+
+            PreparedStatement ps=c.prepareStatement("delete from users");
+            ps.executeUpdate();
+
+            ps.close();
+            c.close();
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
+    }
+    public int getCount(){
+        try{
+            Connection c= connectonMaker.makeConnection();
+            PreparedStatement ps=c.prepareStatement("select count(*) from users");
+            ResultSet result=ps.executeQuery();
+            result.next();
+
+            int count=result.getInt(1);
+
+            result.close();
+            ps.close();
+            c.close();
+
+            return count;
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
+        return 0;
+    }
     public void add(User user) {
         try {
             // DB접속 (ex sql workbeanch실행)

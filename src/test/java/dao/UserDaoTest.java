@@ -1,6 +1,7 @@
 package dao;
 
 import domain.User;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +21,12 @@ class UserDaoTest {
     @Test
     public void addAndGet(){
         userDao=context.getBean("awsUserDao", UserDao.class);
-        userDao.add(new User("4", "nana", "1234"));
-        User user=userDao.findById("4");
-        assertEquals("nana", user.getName());
+        userDao.deleteAll();
+        assertEquals(0, userDao.getCount());
+        userDao.add(new User("1", "minji", "1234"));
+        User user=userDao.findById("1");
+        assertEquals("minji", user.getName());
+        assertEquals(1, userDao.getCount());
     }
 
 }
