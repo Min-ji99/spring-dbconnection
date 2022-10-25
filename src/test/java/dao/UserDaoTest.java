@@ -12,6 +12,8 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.sql.SQLException;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
@@ -35,7 +37,7 @@ class UserDaoTest {
     }
     @Test
     @DisplayName("insert 확인")
-    public void addAndGet(){
+    public void addAndGet() throws SQLException {
         userDao.deleteAll();
         assertEquals(0, userDao.getCount());
         userDao.add(user1);
@@ -55,7 +57,7 @@ class UserDaoTest {
     }
     @Test
     @DisplayName("deleteAll getCount 테스트")
-    public void deleteAllTeat(){
+    public void deleteAllTeat() throws SQLException {
         userDao.deleteAll();
         assertEquals(0, userDao.getCount());
     }

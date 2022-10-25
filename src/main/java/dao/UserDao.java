@@ -12,13 +12,13 @@ public class UserDao {
     public UserDao(){this.connectonMaker=new AwsConnectionMaker();}
     public UserDao(ConnectonMaker connectonMaker){this.connectonMaker=connectonMaker;}
 
-    public void deleteAll(){
+    public void jdbcContextWithStatementStrategy(StatementStrategy stmt) throws SQLException{
         Connection c=null;
         PreparedStatement ps=null;
         try{
             c = connectonMaker.makeConnection();
 
-            ps=new DeleteAllStrategy().makePreparedStatement(c);
+            ps=stmt.makePreparedStatement(c);
             ps.executeUpdate();
         }catch(SQLException e){
             e.printStackTrace();
@@ -34,6 +34,9 @@ public class UserDao {
                 }catch(SQLException e){}
             }
         }
+    }
+    public void deleteAll() throws SQLException {
+        jdbcContextWithStatementStrategy(new DeleteAllStrategy());
     }
     public int getCount(){
         Connection c=null;
@@ -70,36 +73,9 @@ public class UserDao {
         }
         return count;
     }
-    public void add(User user) {
-        Connection c=null;
-        PreparedStatement ps=null;
-        try {
-            // DB접속 (ex sql workbeanch실행)
-            c = connectonMaker.makeConnection();
+    public void add(User user) throws SQLException {
+        jdbcContextWithStatementStrategy(new AddStrategy(user));
 
-            // Query문 작성
-            ps = c.prepareStatement("INSERT INTO users(id, name, password) VALUES(?,?,?);");
-            ps.setString(1, user.getId());
-            ps.setString(2, user.getName());
-            ps.setString(3, user.getPassword());
-
-            // Query문 실행
-            ps.executeUpdate();
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }finally{
-            if(ps!=null){
-                try{
-                    ps.close();
-                }catch (SQLException e){}
-            }
-            if(c!=null){
-                try{
-                    c.close();
-                }catch(SQLException e){}
-            }
-        }
     }
 
     public User findById(String id) {
