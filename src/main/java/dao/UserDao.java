@@ -1,8 +1,10 @@
 package dao;
 
 import domain.User;
+import org.springframework.dao.EmptyResultDataAccessException;
 
 import java.sql.*;
+import java.util.EmptyStackException;
 import java.util.Map;
 
 public class UserDao {
@@ -65,6 +67,7 @@ public class UserDao {
     }
 
     public User findById(String id) {
+        User user=null;
         try {
             // DB접속 (ex sql workbeanch실행)
             Connection c = connectonMaker.makeConnection();
@@ -76,13 +79,16 @@ public class UserDao {
             // Query문 실행
             ResultSet rs = pstmt.executeQuery();
             rs.next();
-            User user = new User(rs.getString("id"), rs.getString("name"),
+
+            user = new User(rs.getString("id"), rs.getString("name"),
                     rs.getString("password"));
 
             rs.close();
             pstmt.close();
             c.close();
-
+            if(user==null){
+                throw new EmptyResultDataAccessException(1);
+            }
             return user;
 
         } catch (SQLException e) {

@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -41,8 +42,17 @@ class UserDaoTest {
         User user=userDao.findById("1");
         assertEquals("minji", user1.getName());
         assertEquals(1, userDao.getCount());
-    }
 
+        userDao.add(user2);
+        user=userDao.findById("2");
+        assertEquals("nana", user2.getName());
+        assertEquals(2, userDao.getCount());
+
+        userDao.add(user3);
+        user=userDao.findById("3");
+        assertEquals("mimi", user3.getName());
+        assertEquals(3, userDao.getCount());
+    }
     @Test
     @DisplayName("deleteAll getCount 테스트")
     public void deleteAllTeat(){
